@@ -1,0 +1,13 @@
+Antes de realizar nada, ejecutar el script initEnv.sh que representa un pequeño script de carga de acciones rutinarias cada vez que se cierre la sesion de la consola:
+
+1) Activar el entorno virtual asociado a este proyecto:
+	
+	source venv/bin/activate
+
+2) Exportar la variable de entorno FLASK_APP para poder ejecutar correctamente el comando 'flask run':
+
+	export FLASK_APP=microblog.py
+
+Para que estos cambios tengan efecto sobre ESTA CONSOLA es necesario utilizar el comando source en vez del comando bash:
+
+	source init.sh 
