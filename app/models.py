@@ -4,6 +4,7 @@ from app import db
 from flask_login import UserMixin
 from app import login
 from hashlib import md5
+import random
 
 #Auxiliar tables
 followers = db.Table('followers',
@@ -38,6 +39,15 @@ class User(UserMixin, db.Model):
 	def check_password(self, password):
 		return check_password_hash(self.password_hash, password)
 
+	def forgot_password_generate(self, length=None):
+		new_password = ""
+		possibleValues = "abcdefghijklmnopqrstuvwxyz"
+		if length is None:
+			length = 4
+		for i in range(length):
+			new_password = new_password + possibleValues[random.randint(0, len(possibleValues))]
+		return new_password
+
 	def follow(self, user):
 		if not self.is_following(user):
 			self.followed.append(user)
@@ -49,6 +59,12 @@ class User(UserMixin, db.Model):
 	def is_following(self, user):
 		return self.followed.filter(
 				followers.c.followed_id == user.id).count() > 0
+
+	def get_followed(self):
+		return self.followed
+
+	def get_followers(self):
+		return self.followers
 
 	def followed_posts(self):
 		followed = Post.query.join(

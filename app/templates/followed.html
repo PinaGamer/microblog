@@ -1,0 +1,8 @@
+{% extends "user.html" %}
+
+{% block content %}
+	<h1>Followed</h1>
+	{% for f in followed %}
+		<p>{{ f.username }} - {{ f.email }}</p>
+	{% endfor %}
+{% endblock %}

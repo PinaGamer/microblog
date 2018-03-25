@@ -1,10 +1,11 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, ForgotPasswordForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
+import logging 
 
 #This function will be executed before any other method
 @app.before_request
@@ -64,6 +65,23 @@ def register():
 		return redirect(url_for('login'))
 	return render_template('register.html', title='Register', form=form)
 
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+	form = ForgotPasswordForm()
+	if form.validate_on_submit():
+		user = User.query.filter_by(username=form.username.data).first()
+		if user is not None:
+			new_password = user.forgot_password_generate()
+			user.set_password(new_password)
+			flash('New password is {}. Change it as soon as possible'.format(new_password))
+			db.session.commit()
+		else:
+			flash('That user does not exists. Check the username')
+		return redirect(url_for('index'))
+	return render_template('forgot_password.html', title='Forgot password', form=form)
+
 
 @app.route('/user/<username>')
 @login_required
@@ -75,6 +93,17 @@ def user(username):
 	]
 	return render_template('user.html', title=user.username + "'s page profile", user=user, posts=posts)
 
+@app.route('/followed')
+@login_required
+def followed():
+	followed = current_user.get_followed()
+	return render_template('followed.html', followed=followed)
+
+@app.route('/followers')
+@login_required
+def followers():
+	followers = current_user.get_followers()
+	return render_template('followers.html', followers=followers)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required

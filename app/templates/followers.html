@@ -1,0 +1,8 @@
+{% extends "user.html" %}
+
+{% block content %}
+	<h1>Followers</h1>
+	{% for f in followers %}
+		<p>{{ f.username }} - {{ f.email }}</p>
+	{% endfor %}
+{% endblock %}
