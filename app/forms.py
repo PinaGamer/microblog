@@ -10,6 +10,10 @@ class LoginForm(FlaskForm):
 	remember_me = BooleanField('Remember Me')
 	submit = SubmitField('Sign In')
 
+class PostForm(FlaskForm):
+	post = TextAreaField('Say something', validators=[DataRequired(), Length(min=1, max=140)])
+	submit = SubmitField('Post it')
+
 class RegistrationForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired()])
 	email = StringField('Email', validators=[DataRequired(), Email(message="Use a valid email")])	#El segundo validator Email() asegura que el usuario introduce un string con el formato de una direccion de correo
